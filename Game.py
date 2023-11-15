@@ -77,6 +77,7 @@ def end(lead, hammer, sheet, out, rocks, num, view):
     
 comShots = [
     (0, -5, 0), # Button
+    (0, -5, 0), # Button, double odds
     (-.3, -5.3, 0), # Backleft
     (-.33, -4.7, 0), # Frontleft
     (.3, -5.3, 0), # Backright
@@ -114,9 +115,9 @@ def shot(sheet, team, out, view, hammer=False):
             pygame.display.update()
     else:
         newStone.xv, newStone.yv, newStone.curve = random.choice(comShots)
-        newStone.xv = numpy.random.normal(newStone.xv, abs(.15 - .015*team.Xacc))
-        newStone.yv = numpy.random.normal(newStone.yv, abs(.15 - .015*team.Yacc))
-        newStone.curve = numpy.random.normal(newStone.curve, abs(.01 - .001*team.Cacc))
+        newStone.xv = numpy.random.normal(newStone.xv, abs(.2 - .02*team.Xacc))
+        newStone.yv = numpy.random.normal(newStone.yv, abs(.2 - .02*team.Yacc))
+        newStone.curve = numpy.random.normal(newStone.curve, abs(.02 - .002*team.Cacc))
     if view == True:
         inmotion(sheet, out)
     elif view == 'highlight' and hammer:
