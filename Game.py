@@ -2,12 +2,15 @@ from Objects import *
 
 
 def game(home, away, out=None, view = False, ends=4, rocks=4, finish = 1):
-    if home.controlled or away.controlled:  # See the games you play
-        view = True
     colors = colorchecker(home.prefs, away.prefs, req = 25)
     home.color = colors[0]
     away.color = colors[1]
-    if view or odds(.1):
+    if modePick == 'Spectate' and (view or (home.top3rd() and away.top3rd()) or finish == 2): # finish 2 is playoffs
+        gamepreview(home, away, out, ends, rocks)
+        if not view:
+            view = 'highlight'
+    if home.controlled or away.controlled:  # See the games you play
+        view = True
         gamepreview(home, away, out, ends, rocks)
     hammer = home
     lead = away
@@ -68,8 +71,8 @@ def game(home, away, out=None, view = False, ends=4, rocks=4, finish = 1):
 def end(lead, hammer, sheet, out, rocks, num, view):
     sheet.clear(num, hammer)
     for i in range(rocks):
-        shot(sheet, lead, out, view)
-        shot(sheet, hammer, out, view)
+        shot(sheet, lead, out, view, hammer=False)
+        shot(sheet, hammer, out, view, hammer=(i+1)==rocks)
     return sheet.scoring()
     
 comShots = [
@@ -83,7 +86,7 @@ comShots = [
     (0, -4, 0) # Center Guard
 ]
 
-def shot(sheet, team, out, view):
+def shot(sheet, team, out, view, hammer=False):
     newStone = Stone(team)
     sheet.addStone(newStone)
     if team.controlled:  # Will always have view on
@@ -114,9 +117,11 @@ def shot(sheet, team, out, view):
         newStone.xv = numpy.random.normal(newStone.xv, abs(.15 - .015*team.Xacc))
         newStone.yv = numpy.random.normal(newStone.yv, abs(.15 - .015*team.Yacc))
         newStone.curve = numpy.random.normal(newStone.curve, abs(.01 - .001*team.Cacc))
-    if view:
+    if view == True:
         inmotion(sheet, out)
-    else:
+    elif view == 'highlight' and hammer:
+        inmotion(sheet, out)
+    else: # should include 'no'
         inmotion_blind(sheet)
 
 def linepoint(mouse):
@@ -214,8 +219,7 @@ def sidepreview(team, out, center):
         text('---USER---', (center, 100), 32, out)
     text(team, (center, 150), 40, out)
     image(f'./{leaguePick}/{team.name.replace(space, underscore)}.png', out, tl=(center-150, 175), size=(300, 300 * (3/4)))
-    spot = list(team.division.df.Team).index(team) + 1
-    text(f'{spot}{endmatch[str(spot)]} in {team.division.name}', (center, 425), 24, out)
+    text(f'{team.spot()}{endmatch[str(team.spot())]} in {team.division.name}', (center, 425), 24, out)
     text(f'Record: {team.wins}-{team.loss} ({team.PointsFor - team.PointsAgainst} PD)', (center, 450), 24, out)
     text(f'X-acc: {team.Xacc}, Y-acc: {team.Yacc}, C-Acc: {team.Cacc}', (center, 475), 24, out)
     text('Recent results:*', (center, 500), 16, out)

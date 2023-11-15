@@ -46,4 +46,5 @@ pygame.display.set_caption('CURLING')
 kill = False
 
 checkpoint('WELCOME TO CURLING', (500, 300), 40, out)
-leaguePick = buttons(out, 'League Option', ['States', 'MLW'])
+leaguePick = buttons(out, 'League Option', ['States', 'MLW', 'NFL'])
+modePick = buttons(out, 'What game mode?', ['1-Player', 'Spectate'])

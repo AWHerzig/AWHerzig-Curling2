@@ -4,14 +4,16 @@ from Game import *
 if leaguePick == 'States':
     from States import *
 elif leaguePick == 'MLW':
-    from MLW import *
+    from MLW import * 
+elif leaguePick == 'NFL':
+    from NFL import *
 else:
     raise ValueError('Not built yet')
 
 #game(SouthwestT[0], SouthwestT[2], out = out, view=True) # This is for testing
 
 
-modePick = buttons(out, 'What game mode?', ['1-Player', 'Spectate'])
+
 if modePick == '1-Player':
     divPick = buttons(out, 'Which Division?', [i.name for i in Tables], retop=False)
     teamPick = buttons(out, 'Which Team?', [i for i in Teams[divPick]])

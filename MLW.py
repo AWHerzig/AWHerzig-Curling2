@@ -58,12 +58,12 @@ def playit(schedule, out, Tables, ends, rocks):
         for matchup in slate:
             if None not in matchup:
                 rezzies.append(game(matchup[0], matchup[1], out, ends=ends, rocks=rocks))
+                for div in Tables: # for mlw only cuz in series
+                    div.standingsUpdate()
         num = 0
         while num < len(rezzies):
             resultsDisplayer(out, rezzies[num:min(num+12, len(rezzies))])
             num += 12
-        for div in Tables:
-            div.standingsUpdate()
         standingsDisplayer(out, Tables, f'SLATE {schedule.index(slate)+1}')
     #Tournament
     playoffmatchups = ( 
@@ -87,10 +87,12 @@ def playoffPlayer(out, matchups, leng, seeded, ends, rocks): # just gotta be car
             rezzies = []
             for pair in slateM:
                 if pair[0].pwins < need and pair[1].pwins < need:
-                    if seriesLoc[sLeng][gamenum] == 0:
-                        rezzies.append(game(pair[0], pair[1], out, finish=2, ends=ends, rocks=rocks))
+                    if (seriesLoc[sLeng][gamenum] == 0 and seeded[roundN]) or \
+                        (not seeded[roundN] and ((seriesLoc[sLeng][gamenum] == 0 and pair[0].seeder()>=pair[1].seeder()) or \
+                                                    seriesLoc[sLeng][gamenum] == 1 and pair[0].seeder()<pair[1].seeder())): # lets pray
+                        rezzies.append(game(pair[0], pair[1], out, finish=2, ends=ends, rocks=rocks, view='highlight'))
                     else:
-                        rezzies.append(game(pair[1], pair[0], out, finish=2, ends=ends, rocks=rocks))
+                        rezzies.append(game(pair[1], pair[0], out, finish=2, ends=ends, rocks=rocks, view = 'highlight'))
                 else:
                     pass # this is actually pass
             if rezzies:

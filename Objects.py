@@ -21,6 +21,15 @@ class Team:
         self.pwins = 0
         self.games = []
 
+    def spot(self):
+        return list(self.division.df.Team).index(self) + 1
+
+    def top3rd(self):
+        return len(self.division.df)/3 >= self.spot()
+
+    def seeder(self):
+        return self.wins + .01*(self.PointsFor - self.PointsAgainst)
+
     def __str__(self):
         return self.name
 
@@ -174,7 +183,7 @@ class Sheet:
 
 class Scoreboard:
     def __init__(self, home, away, ends):
-        self.top = [['   '] + [i+1 for i in range(ends)] + ['E'], 'F']
+        self.top = [['ABR'] + [i+1 for i in range(ends)] + ['E'], 'F']
         self.home = [[home.ABR] + ([0]*(ends+1)), 0]
         self.away = [[away.ABR] + ([0]*(ends+1)), 0]
 
@@ -201,7 +210,7 @@ class Scoreboard:
         text(f'{self.home[0][0]} {self.home[1]}-{self.away[1]} {self.away[0][0]}', (startx, starty), 16, out)
 
 class Standings:
-    def __init__(self, teams, name):
+    def __init__(self, teams, name, dset = True):
         self.name = name
         self.df = pandas.DataFrame({
             'Team' : teams,
@@ -209,14 +218,26 @@ class Standings:
             'Losses': [0]*len(teams),
             'PointsDiff': [0]*len(teams)
         })  
-        for i in teams:
-            i.division = self
+        if dset:
+            for i in teams:
+                i.division = self
 
     def standingsUpdate(self):
         self.df.Wins = [team.wins for team in self.df.Team] 
         self.df.Losses = [team.loss for team in self.df.Team]
         self.df.PointsDiff = [team.PointsFor - team.PointsAgainst for team in self.df.Team]
-        self.df = self.df.sort_values(['Wins', 'PointsDiff'], ascending=False, ignore_index=True)
+        self.df['pct']= numpy.where(self.df.Wins + self.df.Losses > 0,self.df.Wins / (self.df.Wins + self.df.Losses), .5)
+        self.df = self.df.sort_values(['pct', 'PointsDiff'], ascending=False, ignore_index=True).drop('pct', axis=1)
+
+    def standingsUpdateNFL(self): # FOR NFL CONFERENCE STANDINGS
+        self.df.Wins = [team.wins for team in self.df.Team] 
+        self.df.Losses = [team.loss for team in self.df.Team]
+        self.df.PointsDiff = [team.PointsFor - team.PointsAgainst for team in self.df.Team]
+        self.df['pct']= numpy.where(self.df.Wins + self.df.Losses > 0,self.df.Wins / (self.df.Wins + self.df.Losses), .5)
+        self.df['div']= [team.spot()==1 for team in self.df.Team]
+        self.df['final'] = self.df['pct'] + self.df['div']
+        self.df = self.df.sort_values(['final', 'PointsDiff'], ascending=False, ignore_index=True).\
+            drop('pct', axis=1).drop('div', axis=1).drop('final', axis=1)
 
     def __str__(self):
         return self.df.to_string()

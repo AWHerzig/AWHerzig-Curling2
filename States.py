@@ -173,10 +173,12 @@ def playoffPlayer(out, matchups, leng, seeded, ends, rocks): # just gotta be car
             rezzies = []
             for pair in slateM:
                 if pair[0].pwins < need and pair[1].pwins < need:
-                    if seriesLoc[sLeng][gamenum] == 0:
-                        rezzies.append(game(pair[0], pair[1], out, finish=2, ends=ends, rocks=rocks))
+                    if (seriesLoc[sLeng][gamenum] == 0 and seeded[roundN]) or \
+                        (not seeded[roundN] and ((seriesLoc[sLeng][gamenum] == 0 and pair[0].seeder()>=pair[1].seeder()) or \
+                                                    seriesLoc[sLeng][gamenum] == 1 and pair[0].seeder()<pair[1].seeder())): # lets pray
+                        rezzies.append(game(pair[0], pair[1], out, finish=2, ends=ends, rocks=rocks, view='highlight' if roundN > 2 else 'no'))
                     else:
-                        rezzies.append(game(pair[1], pair[0], out, finish=2, ends=ends, rocks=rocks))
+                        rezzies.append(game(pair[1], pair[0], out, finish=2, ends=ends, rocks=rocks, view='highlight' if roundN > 2 else 'no'))
                 else:
                     pass # this is actually pass
             if rezzies:
