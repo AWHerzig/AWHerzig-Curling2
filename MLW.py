@@ -67,8 +67,8 @@ def playit(schedule, out, Tables, ends, rocks):
         standingsDisplayer(out, Tables, f'SLATE {schedule.index(slate)+1}')
     #Tournament
     playoffmatchups = ( 
-        (Tables[0].df.iloc[0, 0], (Tables[0].df.iloc[1, 0], Tables[0].df.iloc[2, 0])), 
-        (Tables[1].df.iloc[0, 0], (Tables[1].df.iloc[1, 0], Tables[1].df.iloc[2, 0]))
+        noneRemover(unseeder(list(Tables[0].df.iloc[:3, 0]))), 
+        noneRemover(unseeder(list(Tables[1].df.iloc[:3, 0])))
     )
     playoffPlayer(out, playoffmatchups, leng = [3, 3, 5], seeded = [True, True, False], ends=ends, rocks=rocks)
 

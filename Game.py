@@ -5,7 +5,8 @@ def game(home, away, out=None, view = False, ends=4, rocks=4, finish = 1):
     colors = colorchecker(home.prefs, away.prefs, req = 25)
     home.color = colors[0]
     away.color = colors[1]
-    if modePick == 'Spectate' and (view or (home.top3rd() and away.top3rd()) or finish == 2): # finish 2 is playoffs
+    if modePick == 'Spectate' and (view or (home.top3rd() and away.top3rd()) or finish == 2 or \
+                                    (home.spot() <= 2 and away.spot() <= 2 and home.division == away.division)): # finish 2 is playoffs
         gamepreview(home, away, out, ends, rocks)
         if not view:
             view = 'highlight'

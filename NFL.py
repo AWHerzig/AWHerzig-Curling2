@@ -85,7 +85,7 @@ for weeknum in range(1, 19):
         slate.append((bigDict[cur.iloc[gamenum, 0]], bigDict[cur.iloc[gamenum, 2]]))
     schedule.append(slate)
 
-def playit(schedule, out, Tables, ends, rocks): 
+def playit(schedule, out, Tables, ends, rocks):
     for slate in schedule:
         rezzies = []
         for matchup in slate:
@@ -97,33 +97,15 @@ def playit(schedule, out, Tables, ends, rocks):
             num += 12
         for div in Tables:
             div.standingsUpdate()
-        NFC.standingsUpdateNFL()
-        AFC.standingsUpdateNFL()
+        NFC.standingsUpdateDIV()
+        AFC.standingsUpdateDIV()
         standingsDisplayer(out, Tables[0:4], 'NFC DIVISIONS')
         standingsDisplayer(out, Tables[4:8], 'AFC DIVISIONS')
         standingsDisplayer(out, [NFC, AFC], 'CONFERENCE STANDINGS')
     #Tournament
     playoffs = ( # SUPER BOWL
-        ( # AFC CHAMPIONSHIP
-            (
-                AFC.df.iloc[0, 0],
-                (AFC.df.iloc[3, 0], AFC.df.iloc[4, 0])
-            ),
-            (
-                (AFC.df.iloc[1, 0], AFC.df.iloc[6, 0]),
-                (AFC.df.iloc[2, 0], AFC.df.iloc[5, 0])
-            )
-        ), 
-        ( # NFC CHAMPIONSHIP
-            (
-                NFC.df.iloc[0, 0],
-                (NFC.df.iloc[3, 0], NFC.df.iloc[4, 0])
-            ),
-            (
-                (NFC.df.iloc[1, 0], NFC.df.iloc[6, 0]),
-                (NFC.df.iloc[2, 0], NFC.df.iloc[5, 0])
-            )
-        )
+        noneRemover(unseeder(list(AFC.df.iloc[:7, 0]))), 
+        noneRemover(unseeder(list(NFC.df.iloc[:7, 0])))
     )
     playoffPlayer(out, playoffs, [1, 1, 1, 1], [True, False, False, False], ends=ends, rocks=rocks)
 

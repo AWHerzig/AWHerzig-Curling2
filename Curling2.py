@@ -7,6 +7,8 @@ elif leaguePick == 'MLW':
     from MLW import * 
 elif leaguePick == 'NFL':
     from NFL import *
+elif leaguePick == 'Soccer':
+    from Soccer import *
 else:
     raise ValueError('Not built yet')
 

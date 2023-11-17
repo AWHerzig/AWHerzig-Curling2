@@ -229,7 +229,7 @@ class Standings:
         self.df['pct']= numpy.where(self.df.Wins + self.df.Losses > 0,self.df.Wins / (self.df.Wins + self.df.Losses), .5)
         self.df = self.df.sort_values(['pct', 'PointsDiff'], ascending=False, ignore_index=True).drop('pct', axis=1)
 
-    def standingsUpdateNFL(self): # FOR NFL CONFERENCE STANDINGS
+    def standingsUpdateDIV(self): # FOR NFL CONFERENCE STANDINGS and Soccer ALL TEAMS
         self.df.Wins = [team.wins for team in self.df.Team] 
         self.df.Losses = [team.loss for team in self.df.Team]
         self.df.PointsDiff = [team.PointsFor - team.PointsAgainst for team in self.df.Team]
@@ -246,7 +246,12 @@ class Standings:
         curx = startx
         cury = starty
         text(strViaList([self.name, 'W', 'L', '+/-'], ' '), (curx, cury), 16, out)
-        for i in range(len(self.df)):
+        for i in range(min(len(self.df), 16)):
+            cury += 30
+            text(strViaList(self.df.iloc[i], i+1), (curx, cury), 16, out)
+        cury = starty
+        curx = 1000 - startx
+        for i in range(16, len(self.df)):
             cury += 30
             text(strViaList(self.df.iloc[i], i+1), (curx, cury), 16, out)
 

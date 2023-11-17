@@ -159,8 +159,9 @@ def bracket(teams, surf, topL = (0, 25), botR = (1000, 700), page = True, leng =
     bracketRecursive((maxX, .5*(minY+maxY)), 1, R, xpr, minY, maxY, surf, teams, 1)
     topFirst = (botR[0] - topL[0]) / (2*R)
     topSplit = (botR[0] - topL[0]) / (R)
-    for i in range(len(leng)):
-        text(f'Best of {leng[i]}', (topFirst + i*topSplit, 15), 12, surf)
+    if leng:
+        for i in range(len(leng)):
+            text(f'Best of {leng[i]}', (topFirst + i*topSplit, 15), 12, surf)
     pygame.display.update()
     while page:
         for event in pygame.event.get():
@@ -175,15 +176,24 @@ def bracketRecursive(front, r, maxr, xpr, ceil, floor, surf, teams, seed):  # ce
     up = back[0], .5*(back[1] + ceil)
     down = back[0], .5*(floor + back[1])
     pygame.draw.line(surf, BlackC, front, back)
-    if r == maxr or 2**r + 1 - seed > len(teams):
-        text(f'{teams[seed-1]} ({teams[seed-1].pwins})', (.5*(front[0]+back[0]), front[1]-10), 16, surf)
-        #text(f'{teams[seed-1]}', (.5*(front[0]+back[0]), front[1]-10), 16, surf)
+    if r == maxr or 2**r + 1 - seed > len(teams) or allNone(teams[2**r - seed]):
+        #text(f'{teams[seed-1]} ({teams[seed-1].pwins})', (.5*(front[0]+back[0]), front[1]-10), 16, surf)
+        text(f'{teams[seed-1]}', (.5*(front[0]+back[0]), front[1]-10), 16, surf)
         return
     if r < maxr:
         pygame.draw.line(surf, BlackC, back, up)
         pygame.draw.line(surf, BlackC, back, down)
         bracketRecursive(up, r + 1, maxr, xpr, ceil, front[1], surf, teams, seed)
         bracketRecursive(down, r + 1, maxr, xpr, front[1], floor, surf, teams, 2**r + 1 - seed)
+
+def allNone(x):
+    if x is None:
+        return True
+    elif isinstance(x, tuple):
+        return allNone(x[0]) and allNone(x[1])
+    else:
+        return False
+
 
 def resultsDisplayer(out, games, addedText = ''): # Takes up to 12
     if len(games) > 12:
@@ -285,8 +295,55 @@ def path_replacer(big, path, rep):
         else:
             return big[0], path_replacer(big[1], path[1:], rep)
 
+def unseeder(teams):
+    if len(teams) == 2:
+        return teams	
+    elif len(teams) == 1:
+        return teams[0]
+    #R = math.ceil(log(len(x), 2)) + 1
+    group1 = []
+    group2 = []
+    cur = 0
+    group1.append(teams[cur])
+    cur += 1
+    while cur < len(teams):
+        group2.append(teams[cur])
+        cur += 1
+        if cur < len(teams):
+            group2.append(teams[cur])
+            cur += 1
+            if cur < len(teams):
+                group1.append(teams[cur])
+                cur += 1
+                if cur < len(teams):
+                    group1.append(teams[cur])
+                    cur += 1
+    return unseeder(tuple(group1)), unseeder(tuple(group2))
 
+def noneRemover(teams):
+    if not isinstance(teams, tuple):
+        return teams
+    if len(teams) == 1:
+        return teams[0]
+    if allNone(teams[0]):
+        return noneRemover(teams[1])
+    if allNone(teams[1]):
+        return noneRemover(teams[0])
+    return noneRemover(teams[0]), noneRemover(teams[1])
 
+"""
+x = (1, 2, 3, 4, 5, 6, None, None, None, None, 7, 8, 9)
+print(unseeder(x))
+print(seeder_full(unseeder(x)))
+print(noneRemover(unseeder(x)))
+print(seeder_full(noneRemover(unseeder(x))))
 
+pygame.init()
 
-    
+out = pygame.display.set_mode(screen)
+pygame.display.set_caption('CURLING')
+kill = False
+
+bracket(seeder_full(unseeder(x)), out)
+bracket(seeder_full(noneRemover(unseeder(x))), out)
+"""
