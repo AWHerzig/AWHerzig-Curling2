@@ -156,7 +156,7 @@ def playit(schedule, out, Tables, ends, rocks):
             )
         )
     )
-    playoffPlayer(out, playoffmatchups, leng = [1, 3, 3, 3, 5], seeded = [True, True, False, False, False], ends=ends, rocks=rocks)
+    playoffPlayer(out, playoffmatchups, leng = [1, 1, 1, 1, 3], seeded = [True, True, False, False, False], ends=ends, rocks=rocks)
 
 
 def playoffPlayer(out, matchups, leng, seeded, ends, rocks): # just gotta be careful leng matches, this goes in everything

@@ -72,6 +72,8 @@ Tables = [
     Standings(AFCS, 'AFC South'),
     Standings(AFCW, 'AFC West')
 ]
+Teams = [NFCE, NFCN, NFCS, NFCW,\
+        AFCE, AFCN, AFCS, AFCW]
 NFC = Standings(NFCE+NFCN+NFCS+NFCW, 'NFC', dset=False)
 AFC = Standings(AFCE+AFCN+AFCS+AFCW, 'AFC', dset=False)
 
