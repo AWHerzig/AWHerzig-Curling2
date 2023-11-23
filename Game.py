@@ -116,9 +116,9 @@ def shot(sheet, team, out, view, hammer=False):
             pygame.display.update()
     else:
         newStone.xv, newStone.yv, newStone.curve = random.choice(comShots)
-        newStone.xv = numpy.random.normal(newStone.xv, abs(.2 - .02*team.Xacc))
-        newStone.yv = numpy.random.normal(newStone.yv, abs(.2 - .02*team.Yacc))
-        newStone.curve = numpy.random.normal(newStone.curve, abs(.02 - .002*team.Cacc))
+    newStone.xv = numpy.random.normal(newStone.xv, abs(.2 - .02*team.Xacc))
+    newStone.yv = numpy.random.normal(newStone.yv, abs(.2 - .02*team.Yacc))
+    newStone.curve = numpy.random.normal(newStone.curve, abs(.02 - .002*team.Cacc))
     if view == True:
         inmotion(sheet, out)
     elif view == 'highlight' and hammer:
@@ -220,7 +220,10 @@ def sidepreview(team, out, center):
     if team.controlled:
         text('---USER---', (center, 100), 32, out)
     text(team, (center, 150), 40, out)
-    image(f'./{leaguePick}/{team.name.replace(space, underscore)}.png', out, tl=(center-150, 175), size=(300, 300 * (3/4)))
+    if modePick == '2-player':
+        image(f'./{l1 if center == 250 else l2}/{team.name.replace(space, underscore)}.png', out, tl=(center-150, 175), size=(300, 300 * (3/4)))
+    else:
+        image(f'./{leaguePick}/{team.name.replace(space, underscore)}.png', out, tl=(center-150, 175), size=(300, 300 * (3/4)))
     text(f'{team.spot()}{endmatch[str(team.spot())]} in {team.division.name}', (center, 425), 24, out)
     text(f'Record: {team.wins}-{team.loss} ({team.PointsFor - team.PointsAgainst} PD)', (center, 450), 24, out)
     text(f'X-acc: {team.Xacc}, Y-acc: {team.Yacc}, C-Acc: {team.Cacc}', (center, 475), 24, out)

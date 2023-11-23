@@ -120,7 +120,10 @@ class Sheet:
         pygame.draw.line(out, BlackC, (xlim[1], ylim[1]), (xlim[1], ylim[0]))
         pygame.draw.line(out, BlackC, (xlim[1], ylim[1]), (xlim[0], ylim[1]))
         pygame.draw.line(out, BlackC, (xlim[0], hogLine), (xlim[1], hogLine))
-        image(f'./{leaguePick}/{self.home.name.replace(space, underscore)}.png', out, tl=(400, 400), size=(200, 200 * (3/4)))
+        if modePick == '2-player':
+            image(f'./{l1}/{self.home.name.replace(space, underscore)}.png', out, tl=(400, 400), size=(200, 200 * (3/4)))
+        else:
+            image(f'./{leaguePick}/{self.home.name.replace(space, underscore)}.png', out, tl=(400, 400), size=(200, 200 * (3/4)))
         for stone in self.stones:
             stone.output(out)
         self.board.output(out)

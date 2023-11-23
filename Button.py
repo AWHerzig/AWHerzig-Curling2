@@ -39,6 +39,9 @@ def buttons(out, title, options, retop=True):
     ind = grid[0] + 4*grid[1]
     return options[ind] if retop else ind
 
+
+# TURN OF FOR TESTING
+#"""
 pygame.init()
 
 out = pygame.display.set_mode(screen)
@@ -46,5 +49,10 @@ pygame.display.set_caption('CURLING')
 kill = False
 
 checkpoint('WELCOME TO CURLING', (500, 300), 40, out)
-leaguePick = buttons(out, 'League Option', ['States', 'MLW', 'NFL', 'Soccer'])
-modePick = buttons(out, 'What game mode?', ['1-Player', 'Spectate'])
+modePick = buttons(out, 'What game mode?', ['1-Player', 'Spectate', '2-player'])
+if modePick != '2-player':
+    leaguePick = buttons(out, 'League Option', ['States', 'MLW', 'NFL', 'Soccer'])
+else:
+    l1 = buttons(out, 'PLAYER 1 League Option', ['States', 'MLW', 'NFL', 'Soccer'])
+    l2 = buttons(out, 'PLAYER 2 League Option', ['States', 'MLW', 'NFL', 'Soccer'])
+#"""
